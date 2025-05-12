@@ -124,12 +124,16 @@ class PoseService : Service() {
                                                 lastGestureTime = now
                                                 Log.d(TAG, "Detected: BOTH HANDS UP → Volume UP")
                                                 adjustVolume(AudioManager.ADJUST_RAISE)
+                                                notifyGesture(3)
+
                                             }
                                         } else if (rightWristY < rightShoulderY && leftWristY >= leftShoulderY) {
                                             if (now - lastGestureTime > gestureCooldown) {
                                                 lastGestureTime = now
                                                 Log.d(TAG, "Detected: RIGHT HAND UP → Volume DOWN")
                                                 adjustVolume(AudioManager.ADJUST_LOWER)
+                                                notifyGesture(2)
+
                                             }
                                         }
 
@@ -138,7 +142,9 @@ class PoseService : Service() {
                                                 lastGestureTime = now
                                                 Log.d(TAG, "왼손 판별 조건 만족: leftWristY=$leftWristY, leftShoulderY=$leftShoulderY, rightWristY=$rightWristY, rightShoulderY=$rightShoulderY")
                                                 Log.d(TAG, "Detected: Left HAND UP → theme change")
-                                                notifyRightHandGesture()
+                                                //notifyLeftHandGesture()
+                                                notifyGesture(1)
+
                                             }
                                         }
                                     }
@@ -218,11 +224,19 @@ class PoseService : Service() {
         )
     }
 
-    private fun notifyRightHandGesture() {
+    private fun notifyLeftHandGesture() {
         val intent = Intent("com.example.ACTION_LEFT_HAND_UP")
         intent.setPackage("com.example.customerlauncher")
         sendBroadcast(intent)
         Log.d(TAG, "Broadcast: LEFT HAND UP sent")
+    }
+
+    private fun notifyGesture(type: Int) {
+        val intent = Intent("com.example.ACTION_GESTURE")
+        intent.setPackage("com.example.customerlauncher")
+        intent.putExtra("gesture_type", type)  // 1=LEFT, 2=RIGHT, 3=BOTH
+        sendBroadcast(intent)
+        Log.d(TAG, "Broadcast: GESTURE type=$type sent")
     }
 
 
