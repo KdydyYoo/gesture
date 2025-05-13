@@ -380,6 +380,7 @@ public class CameraFragment extends Fragment implements ActivityCompat.OnRequest
 
         if( mTextureView.isAvailable() ){
             Log.i(LOG_TAG, "info. textureView.isAvailable()" );
+
             openCamera( mCameraID, mTextureView.getWidth(), mTextureView.getHeight() );
 
         }else{
@@ -541,6 +542,18 @@ public class CameraFragment extends Fragment implements ActivityCompat.OnRequest
         if( mCameraController == null ) {
             Log.i(LOG_TAG, "info. CameraController is null." );
             initCamera();
+        }
+        if (mTextureView != null && mTextureView.isAvailable()) {
+            SurfaceTexture texture = mTextureView.getSurfaceTexture();
+            if (texture != null) {
+                try {
+                    texture.detachFromGLContext();  // 🔥 이전 연결 강제 해제 (중요)
+                } catch (Exception e) {
+                    Log.w(TAG, "SurfaceTexture.detachFromGLContext failed: " + e.getMessage());
+                }
+                texture.setDefaultBufferSize(width, height);
+                Log.i(TAG, "SurfaceTexture reset for size: " + width + "x" + height);
+            }
         }
 
         mCameraController.openCamera( getActivity(), CameraID, mTextureView, width, height );

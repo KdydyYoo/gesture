@@ -52,6 +52,7 @@ public class CameraController
     private boolean mIsCameraInUse = false;
     private boolean mIsRunning = false;
     //private ExecutorService mExecutorService = Executors.newSingleThreadExecutor();
+    private CameraCaptureSession mCaptureSession;
 
     public interface OnCameraControllerInteractionListener{
         void onCameraControllerMessage( Message msg );
@@ -194,26 +195,53 @@ public class CameraController
         Log.d(TAG, "info. closeCamera. in");
         try{
             mCameraOpenCloseLock.acquire();
-            if( null != mCameraDevice ){
+
+            if( mCaptureSession != null ){
+//                try {
+//                    mCaptureSession.stopRepeating();
+//                } catch (CameraAccessException e) {
+//                    Log.w(TAG, "stopRepeating() failed, likely due to unsupported USB camera: " + e.getMessage());
+//                } catch (IllegalStateException e) {
+//                    Log.w(TAG, "Session was already closed or not active: " + e.getMessage());
+//                }
+                try {
+                    mCaptureSession.close();
+                } catch (Exception e) {
+                    Log.w(TAG, "Session close error: " + e.getMessage());
+                }
+                mCaptureSession = null;
+            }
+
+            if( mCameraDevice != null ){
                 mCameraDevice.close();
                 mCameraDevice = null;
             }
-        }catch( InterruptedException e ){
+        } catch( InterruptedException e ){
             Log.e(TAG, "warning. Error during closeCamera: " + e.getMessage());
-        }catch( NullPointerException e ){
+        } catch( NullPointerException e ){
             Log.e(TAG, "NullPointerException caught", e);
-        }finally{
+        } finally {
             mCameraOpenCloseLock.release();
             stopBackgroundThread();
-            updateCameraState( false );
-            updateRunningState( false );
+            updateCameraState(false);
+            updateRunningState(false);
         }
         Log.d(TAG, "info. closeCamera. out");
     }
 
+
     public void destroyCamera()
     {
-        Log.i(TAG, "info. destroyCamera.");
+        Log.i(TAG, "destroyCamera: cleaning all");
+        closeCamera();
+
+        if (mTextureView != null) {
+            SurfaceTexture texture = mTextureView.getSurfaceTexture();
+            if (texture != null) {
+                texture.release();
+                mTextureView.setSurfaceTexture(null);
+            }
+        }
     }
 
     private final CameraDevice.StateCallback mStateCallback = new CameraDevice.StateCallback()
@@ -297,6 +325,7 @@ public class CameraController
                 {
                     if( null == mCameraDevice )
                         return;
+                    mCaptureSession = cameraCaptureSession;
 
                     try{
                         mPreviewRequestBuilder.set( CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE );

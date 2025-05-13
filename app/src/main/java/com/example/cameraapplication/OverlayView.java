@@ -38,9 +38,9 @@ public class OverlayView extends View {
 
         // 랜드마크를 그린다.
         for (NormalizedLandmark landmark : landmarks) {
-            float x = landmark.x() * getWidth();
+            float x = (1.0f - landmark.x()) * getWidth();  // ✅ 좌우 반전
             float y = landmark.y() * getHeight();
-            canvas.drawCircle(x, y, 10, paint);  // 각 랜드마크를 원으로 그린다.
+            canvas.drawCircle(x, y, 10, paint);
         }
 
         // 스켈레톤 그리기: 각 부위별 랜드마크를 연결
@@ -66,13 +66,14 @@ public class OverlayView extends View {
             NormalizedLandmark end = landmarks.get(connection[1]);
 
             // 랜드마크의 (x, y) 좌표를 화면 좌표로 변환
-            float startX = start.x() * getWidth();
+            float startX = (1.0f - start.x()) * getWidth();
             float startY = start.y() * getHeight();
-            float endX = end.x() * getWidth();
+            float endX = (1.0f - end.x()) * getWidth();
             float endY = end.y() * getHeight();
+            canvas.drawLine(startX, startY, endX, endY, paint);
 
             // 선을 그린다
-            canvas.drawLine(startX, startY, endX, endY, paint);
+            //canvas.drawLine(startX, startY, endX, endY, paint);
         }
     }
 }

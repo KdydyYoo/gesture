@@ -36,7 +36,13 @@ public class MainActivity extends AppCompatActivity implements CameraFragment.On
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
         } else {
             launchCameraFragment();
-            startPoseService();
+            if (Intent.ACTION_MAIN.equals(getIntent().getAction())) {
+                Log.i(TAG, "App launched from launcher — skipping PoseService");
+            } else {
+                Log.i(TAG, "Started via external intent — starting PoseService");
+                startPoseService();
+            }
+            //startPoseService();
         }
     }
 
