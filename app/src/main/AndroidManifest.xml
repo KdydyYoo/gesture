@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <permission android:name="com.example.posservice.PERMISSION_START_POSE_SERVICE"
-        android:protectionLevel="normal" />
+        android:protectionLevel="signature" />
     <uses-feature android:name="android.hardware.usb.host" />
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />

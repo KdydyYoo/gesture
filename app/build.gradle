@@ -6,7 +6,15 @@ plugins {
 android {
     namespace 'com.example.cameraapplication'
     compileSdk 35
+    signingConfigs {
+        Vodafone {
+            storeFile file('C:\\Users\\k250304\\Desktop\\platform 5.jks')
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storePassword 'android'
+        }
 
+    }
     defaultConfig {
         applicationId "com.example.cameraapplication"
         minSdk 26
@@ -23,6 +31,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.Vodafone
         }
     }
     compileOptions {
