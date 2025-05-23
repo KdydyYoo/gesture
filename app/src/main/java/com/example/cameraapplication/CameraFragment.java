@@ -452,15 +452,28 @@ public class CameraFragment extends Fragment implements ActivityCompat.OnRequest
                             boolean isHandsUp = leftWristY < leftShoulderY && rightWristY < rightShoulderY;
                             if (isHandsUp && now - lastGestureTime > GESTURE_COOLDOWN_MS) {
                                 lastGestureTime = now;
-                                adjustVolume(1);
-                                Log.d("volume", "volume up");
+                                //adjustVolume(1);
+                                //Log.d("volume", "volume up");
                                 if (activity != null) {
                                     activity.runOnUiThread(() ->
                                             Toast.makeText(activity, "만세", Toast.LENGTH_LONG).show()
                                     );
                                 }
                             }
+                            boolean isLeftHandUp = leftWristY < leftShoulderY;
+                            boolean isRightHandDown = rightWristY >= rightShoulderY;
+                            if (isLeftHandUp && isRightHandDown && now - lastGestureTime > GESTURE_COOLDOWN_MS) {
+                                lastGestureTime = now;
+                                adjustVolume(1);
+                                Log.d("volume", "volume up");
 
+                                if (activity != null) {
+                                    activity.runOnUiThread(() ->
+                                            Toast.makeText(activity, "왼손 up", Toast.LENGTH_LONG).show()
+                                    );
+                                }
+
+                            }
                             boolean isRightHandUp = rightWristY < rightShoulderY;
                             boolean isLeftHandDown = leftWristY >= leftShoulderY;
                             if (isRightHandUp && isLeftHandDown && now - lastGestureTime > GESTURE_COOLDOWN_MS) {

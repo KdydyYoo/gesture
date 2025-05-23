@@ -122,9 +122,9 @@ class PoseService : Service() {
                                         if (leftWristY < leftShoulderY && rightWristY < rightShoulderY) {
                                             if (now - lastGestureTime > gestureCooldown) {
                                                 lastGestureTime = now
-                                                Log.d(TAG, "Detected: BOTH HANDS UP → Volume UP")
-                                                adjustVolume(AudioManager.ADJUST_RAISE)
-                                                notifyGesture(3)
+                                                Log.d(TAG, "Detected: BOTH HANDS UP → theme change")
+                                                //adjustVolume(AudioManager.ADJUST_RAISE)
+                                                notifyGesture(1)
 
                                             }
                                         } else if (rightWristY < rightShoulderY && leftWristY >= leftShoulderY) {
@@ -136,14 +136,14 @@ class PoseService : Service() {
 
                                             }
                                         }
-
                                         else if (rightWristY >= rightShoulderY && leftWristY < leftShoulderY) {
                                             if (now - lastGestureTime > gestureCooldown) {
                                                 lastGestureTime = now
                                                 Log.d(TAG, "왼손 판별 조건 만족: leftWristY=$leftWristY, leftShoulderY=$leftShoulderY, rightWristY=$rightWristY, rightShoulderY=$rightShoulderY")
-                                                Log.d(TAG, "Detected: Left HAND UP → theme change")
+                                                Log.d(TAG, "Detected: Left HAND UP → Volume UP")
                                                 //notifyLeftHandGesture()
-                                                notifyGesture(1)
+                                                adjustVolume(AudioManager.ADJUST_RAISE)
+                                                notifyGesture(3)
 
                                             }
                                         }
